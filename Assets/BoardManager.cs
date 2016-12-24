@@ -24,10 +24,8 @@ public class BoardManager : MonoBehaviour
             {
                 var point = new Point(x, y);    // スコープ的にここで定義
                 Board[y][x].Tapped
-                    .Subscribe(_ =>
-                    {
-                        Tapped.OnNext(point);
-                    })
+                    .Select(_ => point)
+                    .Subscribe(Tapped.OnNext)
                     .AddTo(gameObject);
             }
         }
@@ -60,9 +58,18 @@ public class BoardManager : MonoBehaviour
         if (points.Count > 0)
         {
             SetStone(action);
+            ReversePoints(points, action.state);
             return true;
         }
         return false;
+    }
+
+    public void ReversePoints(List<Point> points, StoneState state)
+    {
+        foreach (var p in points)
+        {
+            SetStone(new Action(p, state));
+        }
     }
 
     public List<Point> GetReversiblePoints(Action action)

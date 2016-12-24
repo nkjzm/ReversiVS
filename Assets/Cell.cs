@@ -24,7 +24,6 @@ public class Cell : MonoBehaviour
 
     void UpdateState(StoneState state)
     {
-        Debug.Log(state);
         switch (state)
         {
             case StoneState.NONE:
