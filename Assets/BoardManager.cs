@@ -34,7 +34,6 @@ public class BoardManager : MonoBehaviour
         SetStone(new Action(new Point(3, 4), StoneState.BLACK));
         SetStone(new Action(new Point(4, 3), StoneState.BLACK));
         SetStone(new Action(new Point(4, 4), StoneState.WHITE));
-        SetStone(new Action(new Point(5, 4), StoneState.WHITE));
     }
 
     public StoneState GetStone(Point point)
@@ -75,6 +74,11 @@ public class BoardManager : MonoBehaviour
     public List<Point> GetReversiblePoints(Action action)
     {
         var points = new List<Point>();
+
+        if (!GetStone(action.point).Equals(StoneState.NONE))
+        {
+            return new List<Point>();
+        }
 
         for (int y = -1; y <= 1; ++y)
         {
