@@ -10,15 +10,16 @@ public class Cell : MonoBehaviour
     public ReactiveProperty<StoneState> ObservableStoneState
     = new ReactiveProperty<StoneState>(StoneState.NONE);
 
+    public IObservable<Unit> Tapped;
+
     void Start()
     {
-        ObservableStoneState.Subscribe(UpdateState).AddTo(gameObject);
+        Tapped = GetComponent<Button>().OnClickAsObservable();
 
-        GetComponent<Button>().OnClickAsObservable()
-                              .Subscribe(_ =>
-        {
-            ObservableStoneState.Value = (StoneState)Random.Range(1, 3);
-        }).AddTo(gameObject);
+        // 石の更新をビューに反映させる
+        ObservableStoneState
+            .Subscribe(UpdateState)
+            .AddTo(gameObject);
     }
 
     void UpdateState(StoneState state)
@@ -37,11 +38,4 @@ public class Cell : MonoBehaviour
                 break;
         }
     }
-}
-
-public enum StoneState
-{
-    NONE,
-    WHITE,
-    BLACK
 }
