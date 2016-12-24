@@ -63,7 +63,7 @@ public class BoardManager : MonoBehaviour
         return false;
     }
 
-    public void ReversePoints(List<Point> points, StoneState state)
+    void ReversePoints(List<Point> points, StoneState state)
     {
         foreach (var p in points)
         {
