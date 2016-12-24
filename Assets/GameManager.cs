@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 using UniRx;
+using System.Collections.Generic;
+using System.Linq;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,7 +21,7 @@ public class GameManager : MonoBehaviour
             {
                 if (board.TrySetStone(new Action(p, currentState.Value)))
                 {
-                    Debug.Log(string.Format("Set:({0},{1}", p.x, p.y));
+                    Debug.Log(string.Format("Set: {0},{1}", p.x, p.y));
                     currentState.Value = Service.GetOpponent(currentState.Value);
                 }
             })
@@ -26,7 +29,7 @@ public class GameManager : MonoBehaviour
 
         currentState
             .Skip(1)
-            .Subscribe(_ =>
+            .Subscribe(state =>
             {
                 if (CanAvailable())
                 {
@@ -41,7 +44,11 @@ public class GameManager : MonoBehaviour
                         return;
                     }
                     isPassed = true;
-                    currentState.Value = Service.GetOpponent(currentState.Value);
+                    currentState.Value = Service.GetOpponent(state);
+                }
+                if (state.Equals(StoneState.WHITE))
+                {
+                    RandomSet();
                 }
             })
             .AddTo(gameObject);
@@ -52,7 +59,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("ゲーム終了");
     }
 
-    // HACK: 枝切りできる
+    // HACK: もっと枝切りできる
     bool CanAvailable()
     {
         for (int y = 0; y < 8; ++y)
@@ -69,5 +76,28 @@ public class GameManager : MonoBehaviour
             }
         }
         return false;
+    }
+
+    void RandomSet()
+    {
+        var list = new List<Point>();
+        for (int y = 0; y < 8; ++y)
+        {
+            for (int x = 0; x < 8; ++x)
+            {
+                list.Add(new Point(x, y));
+            }
+        }
+        list = list.OrderBy(i => Guid.NewGuid()).ToList();
+
+        foreach (var p in list)
+        {
+            if (board.TrySetStone(new Action(p, currentState.Value)))
+            {
+                Debug.Log(string.Format("Set: {0},{1}", p.x, p.y));
+                currentState.Value = Service.GetOpponent(currentState.Value);
+                return;
+            }
+        }
     }
 }
