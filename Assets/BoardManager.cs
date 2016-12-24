@@ -113,19 +113,6 @@ public class BoardManager : MonoBehaviour
             points.Add(nextPoint);
         }
     }
-
-    StoneState GetOpponent(StoneState state)
-    {
-        switch (state)
-        {
-            case StoneState.BLACK:
-                return StoneState.WHITE;
-            case StoneState.WHITE:
-                return StoneState.BLACK;
-            default:
-                return StoneState.NONE;
-        }
-    }
 }
 
 public enum StoneState
