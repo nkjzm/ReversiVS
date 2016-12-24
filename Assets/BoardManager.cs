@@ -6,7 +6,7 @@ public class BoardManager : MonoBehaviour
 {
     Cell[][] Board = new Cell[8][];
 
-    public Subject<Point> Tapped;
+    public Subject<Point> Tapped = new Subject<Point>();
 
     void Start()
     {
@@ -26,6 +26,11 @@ public class BoardManager : MonoBehaviour
                            .AddTo(gameObject);
             }
         }
+
+        SetStone(new Action(new Point(3, 3), StoneState.WHITE));
+        SetStone(new Action(new Point(3, 4), StoneState.BLACK));
+        SetStone(new Action(new Point(4, 3), StoneState.BLACK));
+        SetStone(new Action(new Point(4, 4), StoneState.WHITE));
     }
 
     public StoneState GetStone(Point p)
