@@ -3,21 +3,20 @@ using System.Linq;
 using UniRx;
 using System.Collections.Generic;
 
-public class BoardManager : MonoBehaviour
+public class BoardManager
 {
     Cell[][] Board = new Cell[8][];
 
     public Subject<Point> Tapped = new Subject<Point>();
 
-    void Start()
-    {
-        var cells = GetComponentsInChildren<Cell>();
+    CompositeDisposable disposables = new CompositeDisposable();
 
+    public BoardManager(List<Cell> cells)
+    {
         for (int i = 0; i < 8; ++i)
         {
             Board[i] = cells.Skip(i * 8).Take(8).ToArray();
         }
-
         for (int y = 0; y < 8; ++y)
         {
             for (int x = 0; x < 8; ++x)
@@ -26,7 +25,7 @@ public class BoardManager : MonoBehaviour
                 Board[y][x].Tapped
                     .Select(_ => point)
                     .Subscribe(Tapped.OnNext)
-                    .AddTo(gameObject);
+                    .AddTo(disposables);
             }
         }
 
@@ -34,6 +33,11 @@ public class BoardManager : MonoBehaviour
         SetStone(new Action(new Point(3, 4), StoneState.BLACK));
         SetStone(new Action(new Point(4, 3), StoneState.BLACK));
         SetStone(new Action(new Point(4, 4), StoneState.WHITE));
+    }
+
+    ~BoardManager()
+    {
+        disposables.Dispose();
     }
 
     public StoneState GetStone(Point point)

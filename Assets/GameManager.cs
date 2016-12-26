@@ -10,11 +10,12 @@ public class GameManager : MonoBehaviour
 
     ReactiveProperty<StoneState> currentState = new ReactiveProperty<StoneState>(StoneState.BLACK);
 
-    bool isPassed = false;
+    bool isPassed;
 
     void Start()
     {
-        board = GetComponentInChildren<BoardManager>();
+        var cells = GetComponentsInChildren<Cell>().ToList();
+        board = new BoardManager(cells);
 
         board.Tapped
             .Subscribe(p =>
