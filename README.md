@@ -1,0 +1,3 @@
+# ReversiVS
+
+UnityとUniRxを使ったリバーシのサンプルです。
